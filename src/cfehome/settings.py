@@ -55,26 +55,44 @@ ALLOWED_HOSTS = [
     ".railway.app"  # https://saas.prod.railway.app
 ]
 if DEBUG:
-    ALLOWED_HOSTS += ["127.0.0.1", "localhost"]
+    ALLOWED_HOSTS += ["127.0.0.1", "localhost", ".localhost"]
 
 
 # Application definition
 
-INSTALLED_APPS = [
+SHARED_APPS = [
     # django-apps
+    "django_tenants",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    "django.contrib.staticfiles",
+    # my-apps
+    "tenant_manager",
+    "landing", 
+    # third-party-apps
+    "slippers",
+    "widget_tweaks",
+]
+
+TENANT_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # my-apps
+
     "commando",
     "customers",
-    "profiles",  
+    "profiles",
     "subscriptions",
     "visits",
-    # third-party-apps
+    "dashboard",
+    "checkouts",
+
     "allauth_ui",
     "allauth",
     "allauth.account",
@@ -84,7 +102,12 @@ INSTALLED_APPS = [
     "widget_tweaks",
 ]
 
+INSTALLED_APPS = list(SHARED_APPS) + [
+    app for app in TENANT_APPS if app not in SHARED_APPS
+]
+
 MIDDLEWARE = [
+    "django_tenants.middleware.main.TenantMainMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -97,6 +120,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "cfehome.urls"
+PUBLIC_SCHEMA_NAME = "public"
+PUBLIC_SCHEMA_URLCONF = "cfehome.urls"
 
 TEMPLATES = [
     {
@@ -127,6 +152,15 @@ DATABASES = {
     }
 }
 
+DATABASE_ROUTERS = (
+    "django_tenants.routers.TenantSyncRouter",
+)
+
+TENANT_MODEL = "tenant_manager.Tenant"
+TENANT_DOMAIN_MODEL = "tenant_manager.Domain"
+SHOW_PUBLIC_IF_NO_TENANT_FOUND = True
+
+
 CONN_MAX_AGE = config("CONN_MAX_AGE", cast=int, default=300)
 DATABASE_URL = config("DATABASE_URL", default="", cast=str)
 
@@ -140,7 +174,7 @@ if DATABASE_URL and DATABASE_URL != "":
             conn_health_checks=True,
         )
     }
-
+DATABASES["default"]["ENGINE"] = "django_tenants.postgresql_backend"
 
 # Add these at the top of your settings.py
 # from os import getenv
