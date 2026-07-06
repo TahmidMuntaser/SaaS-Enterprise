@@ -31,6 +31,12 @@ from .views import (
 
 urlpatterns = [
     path("", landing_views.landing_dashboard_page_view, name='home'),
+    
+    path("products/", checkout_views.product_list, name='product_list'),
+    path("products/create/", checkout_views.product_create, name='product_create'),
+    path("products/<int:pk>/update/", checkout_views.product_update, name='product_update'),
+    path("products/<int:pk>/delete/", checkout_views.product_delete, name='product_delete'),
+    
     path("checkout/sub-price/<int:price_id>/", 
             checkout_views.product_price_redirect_view,
             name='sub-price-checkout'
