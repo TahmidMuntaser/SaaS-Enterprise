@@ -72,7 +72,20 @@ SHARED_APPS = [
     # my-apps
     "tenant_manager",
     "landing", 
+    "commando",
+    "customers",
+    "profiles",
+    "subscriptions",
+    "visits",
+    "dashboard",
+    "checkouts",
+    
     # third-party-apps
+    "allauth_ui",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.github",
     "slippers",
     "widget_tweaks",
 ]
@@ -219,6 +232,9 @@ ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[CFE] "
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
+
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 
 # deprecated in Allauth
 # ACCOUNT_EMAIL_REQUIRED = True
