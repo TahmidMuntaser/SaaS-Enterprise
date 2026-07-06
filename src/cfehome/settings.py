@@ -134,7 +134,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "cfehome.urls"
 PUBLIC_SCHEMA_NAME = "public"
-PUBLIC_SCHEMA_URLCONF = "cfehome.urls"
+PUBLIC_SCHEMA_URLCONF = "cfehome.urls_public"
+
 
 TEMPLATES = [
     {
